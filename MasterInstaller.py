@@ -45,49 +45,117 @@ class MasterInstaller:
     user_interface_level = UILevel.UI_FULL
     launch_condition_table = []  # array of LaunchCondition instances
 
-    @staticmethod
-    def _display_error_message(msg):
+    def _display_error_message(self, msg):
         logging.error(msg)
+        if self.user_interface_level != UILevel.UI_NONE:
+            # TODO: show message to user
+            pass
 
     def _check_launch_conditions(self):
         for condition in self.launch_condition_table:
+            logging.debug("Evaluating launch condition: {}".format(condition.condition))
             result = condition.evaluate()
             if not result:
                 self._display_error_message(condition.description)
                 sys.exit(1)
+            else:
+                logging.debug("OK")
 
     def _file_costing(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        pass
+
+    def _ui_wizard(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        pass
+
+    def _ui_modify_repair_remove(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        pass
+
+    def _ui_notify_installation_type(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
         pass
 
     def _run_required_user_interface(self):
         if self.installation_type == SetupType.FRESH:
-            ui_wizard()
+            self._ui_wizard()
         elif self.installation_script == SetupType.MAINTENANCE:
-            ui_modify_repair_remove()
+            self._ui_modify_repair_remove()
         else:
-            ui_notify_installation_type()
+            self._ui_notify_installation_type()
+
+    def _user_pressed_cancel(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        return False
+
+    def _execute_action(self, action):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        return False
+
+    def _add_action_to_rollback_script(self, action):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        pass
 
     def _execute_installation_script(self):
         result = True
         for action in self.installation_script:
-            if user_pressed_cancel():
+            if self._user_pressed_cancel():
                 break
-            result = execute_action(action)
+            result = self._execute_action(action)
             if result:
-                add_action_to_rollback_script(action)
+                self._add_action_to_rollback_script(action)
             else:
                 break
         return result
 
     def _extract_files_to_temp_folder(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
         pass
 
     def _run_actions_from_ui_sequence(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        pass
+
+    def _application_search(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        pass
+
+    def _show_progress_dialog(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        pass
+
+    def _create_installation_script(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        pass
+
+    def _elevate_privileges(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        pass
+
+    def _run_all_commit_custom_actions(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        pass
+
+    def _execute_rollback_script(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        pass
+
+    def _run_all_actions_after_install_finalize(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        pass
+
+    def _run_all_actions_after_execute_action(self):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
+        pass
+
+    def _display_installation_status(self, result):
+        logging.warning(sys._getframe().f_code.co_name + " UNIMPLEMENTED YET")
         pass
 
     def run(self, user_interface_level=UILevel.UI_FULL, logging_level=logging.DEBUG):
         # Preparation
-        logging.basicConfig(format='%(asctime)s\t%(levelname)s\t%(message)s', level=logging_level)
+        logging.basicConfig(format='%(asctime)s\t\t%(levelname)s\t\t%(message)s', level=logging_level)
         self.user_interface_level = user_interface_level
         self._extract_files_to_temp_folder()
 
@@ -95,22 +163,23 @@ class MasterInstaller:
         if self.user_interface_level not in [UILevel.UI_BASIC, UILevel.UI_NONE]:
             self._run_actions_from_ui_sequence()
         self._check_launch_conditions()
-        application_search()
+        self._application_search()
         self._file_costing()
         if user_interface_level not in [UILevel.UI_BASIC, UILevel.UI_NONE]:
             self._run_required_user_interface()
-            show_progress_dialog()
-        create_installation_script()
+            self._show_progress_dialog()
+        self._create_installation_script()
 
         # Execution (apply changes to the system)
-        elevate_privileges()
+        self._elevate_privileges()
         result = self._execute_installation_script()
         if result == SetupStatus.SUCCESS:
-            run_all_commit_custom_actions()
+            self._run_all_commit_custom_actions()
         else:
-            execute_rollback_script()
+            self._execute_rollback_script()
 
         # Finalize (no changes to the system)
-        run_all_actions_after_install_finalize()
-        run_all_actions_after_execute_action()
-        display_installation_status(result)
+        self._run_all_actions_after_install_finalize()
+        self._run_all_actions_after_execute_action()
+        self._display_installation_status(result)
+        return result
